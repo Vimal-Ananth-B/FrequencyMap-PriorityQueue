@@ -1,0 +1,121 @@
+LEETCODE 347. Top K Frequent Elements
+Given an integer array nums and an integer k, return the k most frequent elements. You may return the answer in any order.
+Example 1:
+Input: nums = [1,1,1,2,2,3], k = 2
+Output: [1,2]
+
+Example 2:
+Input: nums = [1], k = 1
+Output: [1]
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+FIRST LEVEL CODE: TIME Complexity: O(N log N) || SPACE Complexity: O(N)
+Algorithm Steps:
+
+1️⃣ Traverse array and store frequency in HashMap
+2️⃣ Push (number, frequency) pairs into Max-Heap
+3️⃣ Poll heap K times and store numbers in result array
+4️⃣ Return result
+
+FIRST LEVEL CODE:
+
+class Pair{
+    private int kee;
+    private int val;
+    Pair(int key,int value)
+    {
+        this.kee=key;
+        this.val=value;
+    }
+    public int getKee(){
+        return kee;
+    }
+    public int getVal(){
+        return val;
+    }
+}
+class Solution {
+    public int[] topKFrequent(int[] nums, int k) {
+        int arr[]=new int[k];
+        Map<Integer,Integer> mapp=new HashMap<>();
+        PriorityQueue<Pair> pq=new PriorityQueue<>((a,b)->  b.getVal() - a.getVal());
+        for(int i=0;i<nums.length;i++)
+        {
+            if(mapp.containsKey(nums[i]))
+            {
+                mapp.put(nums[i],(mapp.get(nums[i])+1));
+            }
+            else
+            {
+                mapp.put(nums[i],1);
+            }
+        }
+        for(Map.Entry<Integer,Integer> entry:mapp.entrySet())
+        {
+            pq.add(new Pair(entry.getKey(),entry.getValue()));
+        }
+        for(int i=0;i<k;i++)
+        {
+            Pair temp=pq.poll();
+            arr[i]=temp.getKee();
+        }
+        return arr;
+    }
+}
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+OPTIMAL SOLUTION: TIME Complexity: O(N log K) || Space	Complexity: O(K)
+
+Algorithm Steps
+1️⃣ Traverse array and store frequency in HashMap
+2️⃣ For each (number, frequency) pair:
+  • Push into Min-Heap
+  • If heap size > K → remove smallest frequency
+3️⃣ Poll heap K times and store numbers in result array
+4️⃣ Return result
+
+class Pair{
+    private int kee;
+    private int val;
+    Pair(int key,int value)
+    {
+        this.kee=key;
+        this.val=value;
+    }
+    public int getKee(){
+        return kee;
+    }
+    public int getVal(){
+        return val;
+    }
+}
+class Solution {
+    public int[] topKFrequent(int[] nums, int k) {
+        int arr[]=new int[k];
+        Map<Integer,Integer> mapp=new HashMap<>();
+        PriorityQueue<Pair> pq=new PriorityQueue<>((a,b)->  a.getVal() - b.getVal());
+        for(int i=0;i<nums.length;i++)
+        {
+            if(mapp.containsKey(nums[i]))
+            {
+                mapp.put(nums[i],(mapp.get(nums[i])+1));
+            }
+            else
+            {
+                mapp.put(nums[i],1);
+            }
+        }
+        for(Map.Entry<Integer,Integer> entry:mapp.entrySet())
+        {
+            pq.add(new Pair(entry.getKey(),entry.getValue()));
+            if(pq.size()>k)
+            {
+                Pair temp=pq.poll();
+            }
+        }
+        for(int i=0;i<k;i++)
+        {
+            Pair temp=pq.poll();
+            arr[i]=temp.getKee();
+        }
+        return arr;
+    }
+}
