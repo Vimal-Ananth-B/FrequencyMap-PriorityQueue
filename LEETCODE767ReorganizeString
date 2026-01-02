@@ -1,0 +1,92 @@
+LEETCODE 767. Reorganize String
+Given a string s, rearrange the characters of s so that any two adjacent characters are not the same.
+Return any possible rearrangement of s or return "" if not possible.
+Example 1:
+Input: s = "aab"
+Output: "aba"
+
+Example 2:
+Input: s = "aaab"
+Output: ""
+FIRST SOLUTION:
+ALGORITHM:
+🧠 Algorithm – Reorganize String (Heap Scheduling)
+Algorithm Steps
+• Count frequency of each character using HashMap.
+• Insert all (character, frequency) pairs into a max heap (PriorityQueue).
+• While heap size is ≥ 2:
+Remove two characters with highest frequency.
+Append both characters to the result string.
+Decrease their frequencies by 1.
+If any character still has remaining count, reinsert it into heap.
+• If heap has one element left:
+If its remaining frequency is greater than 1 → return empty string.
+Else append the character and finish.
+• Return the result string.
+FIRST SOLUTION: TIME COMPLEXITY:O(N log K) || SPACE COMPLEXITY:O(N)
+class Pair{
+    private char key;
+    private int value;
+    Pair(char kee,int val)
+    {
+        this.key=kee;
+        this.value=val;
+    }
+    public char getKee(){
+        return key;
+    }
+    public int getVal(){
+        return value;
+    }
+}
+class Solution {
+    public String reorganizeString(String s) {
+        String result="";
+        Map<Character,Integer> mapp=new HashMap<>();
+        PriorityQueue<Pair> pq=new PriorityQueue<>((a,b) -> b.getVal() - a.getVal() );
+        Pair frstTemp=null,scndTemp=null;
+        for(int i=0;i<s.length();i++)
+        {
+            if(mapp.containsKey(s.charAt(i)))
+            {
+                mapp.put(s.charAt(i),(mapp.get(s.charAt(i))+1));
+            }
+            else
+            {
+                mapp.put(s.charAt(i),1);  
+            }
+        }
+        for(Map.Entry<Character,Integer> entry:mapp.entrySet())
+        {
+            pq.add(new Pair(entry.getKey(),entry.getValue()));
+        }
+        while(pq.size()>=2)
+        {
+            frstTemp=pq.poll();
+            scndTemp=pq.poll();
+            result=result+frstTemp.getKee();
+            result=result+scndTemp.getKee();
+            if(frstTemp.getVal()-1!=0)
+            {
+                pq.add(new Pair(frstTemp.getKee(),frstTemp.getVal()-1));
+            }
+            if(scndTemp.getVal()-1!=0)
+            {
+                pq.add(new Pair(scndTemp.getKee(),scndTemp.getVal()-1));
+            }
+        }
+        if(pq.size()!=0)
+        {
+        frstTemp=pq.poll();
+        if(frstTemp.getVal()-1!=0)
+        {
+            result="";
+        }
+        else
+        {
+            result=result+frstTemp.getKee();
+        }
+        }
+        return result;
+    }
+}
